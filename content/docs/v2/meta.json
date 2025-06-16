@@ -2,90 +2,25 @@
   "title": "V2 Documentation",
   "pages": [
     "introduction",
-    {
-      "title": "Workspace",
-      "pages": [
-        "workspace/overview"
-      ]
-    },
-    {
-      "title": "Workflows",
-      "pages": [
-        "workflows/import"
-      ]
-    },
-    {
-      "title": "Machines",
-      "pages": [
-        "machines/environment",
-        "machines/scaling",
-        "machines/versioning",
-        "machines/rollback"
-      ]
-    },
-    {
-      "title": "Models",
-      "pages": [
-        "models/download"
-      ]
-    },
-    {
-      "title": "Deployments",
-      "pages": [
-        "deployments/create",
-        "deployments/inputs"
-      ]
-    },
-    {
-      "title": "Team",
-      "pages": [
-        "team/roles",
-        "team/playground"
-      ]
-    },
-    {
-      "title": "Data",
-      "pages": [
-        "data/data-flow"
-      ]
-    },
-    {
-      "title": "Integration",
-      "pages": [
-        "integration/custom-s3"
-      ]
-    },
-    {
-      "title": "NextJS",
-      "pages": [
-        "nextjs/get-started",
-        "nextjs/callback"
-      ]
-    },
-    {
-      "title": "API Documentation",
-      "pages": [
-        {
-          "title": "Run",
-          "pages": [
-            "api-docs/run/deployment--queue",
-            "api-docs/run/get-run",
-            "api-docs/run/cancel-run"
-          ]
-        },
-        {
-          "title": "Callbacks",
-          "pages": [
-            "api-docs/callbacks/receive-run-status-updates-via-webhook"
-          ]
-        }
-      ]
-    },
-    {
-      "title": "Upgrade",
-      "pages": [
-        "upgrade/v2"
-      ]
-    }
+    "workspace/overview",
+    "workflows/import",
+    "machines/environment",
+    "machines/scaling", 
+    "machines/versioning",
+    "machines/rollback",
+    "models/download",
+    "deployments/create",
+    "deployments/inputs",
+    "team/roles",
+    "team/playground",
+    "data/data-flow",
+    "integration/custom-s3",
+    "nextjs/get-started",
+    "nextjs/callback",
+    "api-docs/run/deployment--queue",
+    "api-docs/run/get-run",
+    "api-docs/run/cancel-run",
+    "api-docs/callbacks/receive-run-status-updates-via-webhook",
+    "upgrade/v2"
   ]
 }
