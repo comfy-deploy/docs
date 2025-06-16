@@ -1,0 +1,50 @@
+---
+title: Introduction
+description: 'Comfy Deploy is the easiest way for teams to use ComfyUI and power apps.'
+---
+
+import { Cards, Card } from 'fumadocs-ui/components/card';
+
+<Cards>
+  <Card title="ComfyUI Workspace" href="/v2/workspace/overview">
+    Edit workflow, install custom nodes, install models, run workflows.
+  </Card>
+  <Card title="API Deployments" href="/v2/deployments/create">
+    Deploy workflows as APIs, manage autoscaling, and more.
+  </Card>
+</Cards>
+
+## Overview
+
+We do this by letting your team share the same **custom nodes environments**, **models** and **workflows** with your teams. 
+
+### Getting Started Steps
+
+1. **Import your workflow**
+   Either via the dashboard (recommended) or from your local ComfyUI.
+   ![Import workflow](/images/workflow/import.png)
+
+2. **Build a machine**
+   Define a [machine](/v2/machines/environment) configuration to run your workflows on.
+   ![Build machine](/images/machine/machine-pick.png)
+
+3. **Download models**
+   Download [models](/v2/models/download) into your private storage, to be used in your workflows and team.
+   ![Download models](/images/models/search.png)
+
+4. **ComfyUI in the cloud**
+   Use ComfyUI in your [workspace](/v2/workspace/overview), to modify and test your workflows on cloud GPUs.
+   ![Workspace](/images/workspace/session.png)
+
+5. **Expose inputs**
+   Expose workflow inputs with [our custom nodes](/v2/deployments/inputs), for API and playground use.
+   <video src="/images/input-custom-nodes/expose-prompt.mp4" autoPlay loop muted>
+   </video>
+
+6. **Deploy APIs**
+   Power apps with your [API deployments](/v2/deployments/create).
+   ![API deployments](/images/deployments/page.png)
+
+7. **Share with team**
+   Let your team use your workflows in [playground](/v2/team/playground) without using ComfyUI.
+   ![Team playground](/images/playground/shot.png)

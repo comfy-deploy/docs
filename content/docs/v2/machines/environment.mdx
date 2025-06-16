@@ -1,0 +1,79 @@
+---
+title: Create Environment
+description: Define the environment your workflow will run in
+---
+
+A machine defines the environment your **workflow** will run in.
+
+## Why define the environment?
+
+> **Note:** By defining the environment in a machine, it allows us to be sure that if call us via API, or your teammate wants to use your workflow. It will behave the same way it did with you.
+> 
+> No more "it works on my machine" problems, you all share the same machine (config)!
+
+## How
+
+We give you 2 ways to define your environment.
+
+- `Custom Nodes`
+- `Docker Commands`
+
+![Environment primitives](/images/machine/environment-primitives.png)
+
+### Custom Nodes
+
+You can easily add any custom node that you would find in **ComfyUI Manager** via our picker.
+
+> **Note:** We will use the latest version of the node by default. If you want to use a specific version, you can set the hash of the custom node.
+
+![Custom node list](/images/machine/custom-node-list.png)
+
+### Docker Commands
+
+Machines also support docker commands in machine settings.
+
+> **Note:** We follow the dockerfile command convention, read more [here](https://docs.docker.com/reference/dockerfile/).
+
+![Docker commands](/images/machine/docker-commands.png)
+
+Here are some templates for common uses of docker commands.
+
+#### System packages
+If you need specific system packages
+
+Change:
+- `<package-name>` with the name of the package you want to install.
+```dockerfile
+RUN apt-get update && apt-get install -y <package-name>
+```
+
+#### Models in custom node directories
+Some custom nodes require models to be installed in the custom node directory.
+Update:
+- `<CustomNode-Directory>` with the name of the custom node directory.
+- `<model-url>` with the url of the model.
+
+```dockerfile
+RUN wget -P /comfyui/custom_nodes/<CustomNode-Directory> <model-url>
+```
+
+#### pip packages
+Update:
+- `<package-name>` with the name of the package you want to install.
+```dockerfile
+RUN pip install <package-name>
+```
+
+#### Custom nodes
+Update:
+- `<git-url>` with the url of the git repository you want to install.
+- `<custom-node-name>` with the name of the custom node you want to install.
+- `<commit-hash>` with the hash of the commit you want to install.
+```dockerfile
+WORKDIR /comfyui/custom_nodes
+RUN git clone <git-url> --recursive
+WORKDIR /comfyui/custom_nodes/<custom-node-name>
+RUN git reset --hard <commit-hash>
+RUN if [ -f requirements.txt ]; then python -m pip install -r requirements.txt; fi
+RUN if [ -f install.py ]; then python install.py || echo "install script failed"; fi
+```

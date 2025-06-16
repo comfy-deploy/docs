@@ -1,0 +1,93 @@
+---
+title: Upgrade to V2
+description: 'Guide to upgrade from V1 to V2 APIs'
+---
+
+## Overview
+
+ComfyDeploy V2 APIs bring significant improvements in performance and features. This guide will walk you through the two main steps required to upgrade from V1 to V2.
+
+### Step 1: Ensure ComfyDeploy node is up-to-date
+
+Reccomend to use [`v2.1.0`](https://github.com/BennyKok/comfyui-deploy/releases/tag/v2.1.0) aka `62f8e388bb5217bb0472cb14bd7bf2d417225017` or any recent version 
+
+![ComfyDeploy node version](https://cd-public-misc.s3.us-east-1.amazonaws.com/CleanShot+2025-03-24+at+09.48.53%402x.png)
+
+#### RunPod V2
+
+> **Warning:** We are not actively maintaining the runpod worker image, please get into contact with us if you need help.
+
+For runpod, you will have to update your own docker image configuration,
+
+```dockerfile
+# v2.1.0
+RUN git clone https://github.com/BennyKok/comfyui-deploy.git && cd comfyui-deploy && git reset --hard 62f8e388bb5217bb0472cb14bd7bf2d417225017
+RUN cd comfyui-deploy && pip3 install -r requirements.txt
+```
+
+or by using our latest pre-built image `bennykok/comfydeploy-runpod-worker`
+
+### Step 2: Update API integration
+
+V2 API uses new endpoints. You'll need to update your API integration as follows:
+
+| API Version | Base URL |
+|------------|----------|
+| V1 (Old) | `https://www.comfydeploy.com/api/` |
+| V2 (New) | `https://api.comfydeploy.com/api/` |
+
+If you are using SDK, ensure you update to the latest SDK
+
+```bash
+bun install comfydeploy@latest
+```
+
+> **Warning:** We are not actively maintaining the python and ruby SDKs since less usage as we are seeing, please get into contact with us if you need help.
+
+#### API Endpoint Changes
+
+| Endpoint | V1 (Legacy) | V2 (Current) |
+|----------|-------------|--------------|
+| Create Run | `POST /run` | `POST /run/deployment/queue` |
+| Get Run Status | `GET /run?run_id={run_id}` | `GET /run/{run_id}` |
+
+> **Note:** Remember to update your base URL from `https://www.comfydeploy.com/api` to `https://api.comfydeploy.com/api`
+
+### Step 3: Test Your API Integration
+
+If you are using ComfyDeploy Machine, you are all set.
+
+#### RunPod V2
+
+To verify your RunPod V2 migration, test your API with the following endpoint:
+
+```bash
+POST /run/deployment/queue
+{
+"deployment_id": "5ca368a0-d99d-43a2-b0ff-5111efb707de",
+"flags": ["runpod_v2"]
+}
+```
+
+> **Warning:** We will soon migrate all RunPod V1 users to V2, and using old comfydeploy custom nodes will break after April 15th.
+
+This test will help ensure your integration is working correctly with the V2 API.
+
+> **Note:** Make sure you're using the new base URL: `https://api.comfydeploy.com/api`
+
+## What's New in V2?
+
+- Improved performance and stability
+- Default sessions editing for all v4 machines
+- v2 python API, more resource access for enterprise users
+- Private outputs buckets for enterprise users
+
+## Need Help?
+
+If you encounter any issues during the upgrade process:
+
+- Check the machine logs for any errors
+- Join our [Discord](https://discord.gg/EEYcQmdYZw) community for support
+- Contact us via email for enterprise support
+
+> **Note:** Make sure to test your workflows after upgrading to ensure everything works as expected.

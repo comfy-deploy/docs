@@ -1,0 +1,51 @@
+---
+title: "Versioning"
+description: "Learn how to manage your current and previous versions of your serverless machines in ComfyDeploy through the dashboard."
+---
+
+import { Cards, Card } from 'fumadocs-ui/components/card';
+
+> **Warning:** Machine versioning is only for **V4 machines**.
+
+> **Note:** Features are only available for users on **Business plans**. [Click here to learn more](https://www.comfydeploy.com/pricing)
+
+You can manage your current and previous versions of the serverless machine you've created regardless of status, environment, or specifications from the [dashboard](https://app.comfydeploy.com/machines?view=deployments).
+
+## Version List
+
+![Machine version list showing 9 versions with different statuses and timestamps](https://cd-misc.s3.us-east-2.amazonaws.com/docs/machine_version_list.png)
+
+The version list shows all iterations of your machine, including:
+
+- Version number and creation timestamp
+- Status (Ready, Failed, Building)
+- Build logs and specifications
+- Actions available for each version
+
+Each version maintains a complete snapshot of your machine's configuration at the time it was created, allowing you to track changes and rollback if needed.
+
+**Version would be created when:**
+
+- You create a new machine
+- You do a breaking change and update the machine (i.e. renaming will not create a new version)
+
+## Version Details
+
+![Machine version 1 with detail showing the build logs, status and specifications](https://cd-misc.s3.us-east-2.amazonaws.com/docs/machine_version_detail.png)
+
+Inside version detail page, you are able to:
+
+- View the build logs, including real-time logs while building the machine
+- View the status and specifications of the machine
+- View the custom nodes and commands used to build the machine
+
+## Features
+
+<Cards>
+  <Card title="Rollback" href="/v2/machines/rollback">
+    Rollback to a previous version of the machine
+  </Card>
+  <Card title="Coming Soon...">
+    More features coming soon...
+  </Card>
+</Cards>
