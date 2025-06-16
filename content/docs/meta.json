@@ -1,11 +1,11 @@
 {
-  "title": "V2 Documentation",
+  "title": "ComfyDeploy Documentation",
   "pages": [
     "introduction",
     "workspace/overview",
     "workflows/import",
     "machines/environment",
-    "machines/scaling", 
+    "machines/scaling",
     "machines/versioning",
     "machines/rollback",
     "models/download",
