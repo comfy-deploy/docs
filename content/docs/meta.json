@@ -1,0 +1,26 @@
+{
+  "title": "ComfyDeploy Documentation",
+  "pages": [
+    "introduction",
+    "workspace/overview",
+    "workflows/import",
+    "machines/environment",
+    "machines/scaling",
+    "machines/versioning",
+    "machines/rollback",
+    "models/download",
+    "deployments/create",
+    "deployments/inputs",
+    "team/roles",
+    "team/playground",
+    "data/data-flow",
+    "integration/custom-s3",
+    "nextjs/get-started",
+    "nextjs/callback",
+    "api-docs/run/deployment--queue",
+    "api-docs/run/get-run",
+    "api-docs/run/cancel-run",
+    "api-docs/callbacks/receive-run-status-updates-via-webhook",
+    "upgrade/v2"
+  ]
+}

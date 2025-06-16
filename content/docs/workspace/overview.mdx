@@ -1,0 +1,28 @@
+---
+title: ComfyUI
+description: Use ComfyUI in the cloud with Comfy Deploy workspace
+---
+
+Comfy Deploy let's you use ComfyUI in the cloud. We call this the workspace which you can access for each of your workflows.
+
+The components that make a workspace are:
+1. [Machine environment](/v2/machines/environment) - custom nodes, python packages, etc.
+1. [Models folder](/v2/models/download) - checkpoint, vae, etc.
+
+> **Note:** The machine that your workflow is attached to needs to be built to use and see ComfyUI.
+
+![ComfyUI static frontend](/images/workspace/static.png)
+
+## Sessions 
+
+Sessions let you spin up a GPU in the cloud to run your workflow. 
+
+You will be asked to select a `timeout period`. The maximum amount of time your session will last for.
+
+> **Warning:** Currently you cannot add time while being in the session.
+
+> **Note:** If you want to add new models to your account. You can do so by going to the [storage page](https://www.comfydeploy.com/storage).
+> 
+> Once the model has finished downloading, you will need to restart your session to be able to use the model.
+
+![ComfyUI session](/images/workspace/session.png)

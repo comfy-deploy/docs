@@ -1,0 +1,58 @@
+---
+title: Get Started
+description: Get started with ComfyDeploy TypeScript client
+---
+
+## Overview
+
+Install the TS client
+
+```bash
+bun i comfydeploy
+```
+
+For example setting up the ts client, get your api key [here](https://www.comfydeploy.com/api-keys)
+
+```typescript client.ts
+import { ComfyDeploy } from "comfydeploy";
+
+export const cd = new ComfyDeploy({
+    bearer: "<api-key>",
+});
+```
+
+Running any workflow as API, for more types definitions see [here](https://api.comfydeploy.com/)
+
+### Queue Run
+
+When using queue run, an run id is returned immediately, which you can later use to check the status of the run or get the output.
+Webhook callback is suggested making sure you have a way to receive the response.
+
+```typescript
+const run = await cd.run.deployment.queue({
+  deploymentId: "<deployment-id>",
+  inputs: {
+    prompt: "A beautiful landscape",
+  },
+  webhook: "<your domain>/webhook"
+})
+
+// run.runId
+```
+
+## Getting your workflow on to the platform
+
+<Cards>
+  <Card
+    title="Import Workflow"
+    href="/docs/workflows/import"
+  >
+    Import a workflow from a JSON file
+  </Card>
+  <Card
+    title="Deploy Workflow"
+    href="/docs/deployments/create"
+  >
+   Deploy your workflow
+  </Card>
+</Cards>

@@ -1,0 +1,24 @@
+---
+title: Custom S3 Integration
+description: Integrate with your own S3 bucket for media storage
+---
+
+## Overview
+
+ComfyDeploy allows you to integrate with your own S3 bucket. This is useful if you wanted to have full control over you media storage for `Input` and `Output` media.
+
+![Import workflow](/images/data/data-flow-custom-s3.png)
+
+## Data Components
+
+| Component | Type | Storage | Access |
+|-----------|---------|---------|---------|
+| **Workflows** | `.json` | `postgres` | `Dashboard` / `API` |
+| **Models** | `.safetensors` | `volume` | `Dashboard` / `API` |
+| **Run records** | `.json` | `postgres` | `Dashboard` / `API` |
+| **Inputs** | `.png` / `.jpg` / `.webp` | `Your s3` | `Dashboard` / `API` |
+| **Outputs** | `.png` / `.jpg` / `.webp` | `Your s3` | `Temporary pre-signed URL` / `Dashboard` / `API` |
+
+## Contact Support
+
+If you would like to integrate with your own S3 bucket, please contact support.

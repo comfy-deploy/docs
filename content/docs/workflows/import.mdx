@@ -1,0 +1,47 @@
+---
+title: Import workflow.json
+description: 'Get your workflow on Comfy Deploy'
+---
+
+Import your ComfyUI workflow JSON file directly into ComfyDeploy. The system will automatically detect custom nodes and create a new machine for you.
+
+### Step 1: Import workflow file
+
+Drag and drop your workflow JSON file into the designated window.
+![Import workflow](/images/workflow/import.png)
+
+### Step 2: Pick machine
+
+Pick an existing machine or create a new one.
+![Pick machine](/images/machine/machine-pick.png)
+
+### Step 3: Verify detected custom nodes
+
+If you picked an existing machine, you can skip this step.
+
+> **Note:** You can manually select the custom nodes in the machine creation dialog.
+
+![Verify custom nodes](/images/workflow/custom-node-setup.png)
+
+### Step 4: Conflicting Nodes
+
+Some nodes have the same name in different node packs. If you have some of these nodes you will be asked to select them.
+![Conflicting nodes select](/images/workflow/conflicting-nodes.png)
+
+### Step 5: Model checking (Beta)
+
+Comfy Deploy checks popular nodes with models to see if you already have them.
+
+> **Note:** ComfyUI can only use models that have the exact name in it's models folder.
+
+![Model checking](/images/workflow/model-check.png)
+
+### Step 6: Create machine
+
+Pick a name, select a GPU and the ComfyUI version. You can update these values later.
+![Create machine](/images/machine/machine-finish.png)
+
+### Step 7: Edit workflow
+
+After your machine is built, you can edit your workflow in the workspace.
+![Edit workflow](/images/workflow/workspace.png)

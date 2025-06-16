@@ -1,0 +1,147 @@
+---
+title: Callbacks
+description: 'Callbacks are how you can get notified when a workflow is done'
+---
+
+## Overview
+
+In your nextjs server side, where you run your endpoint, you can queue a run and pass a webhook url to it.
+
+> **Note:** See how the callback works in a NextJS app: [Full Stack Demo](https://github.com/comfy-deploy/comfydeploy-fullstack-demo)
+
+```typescript src/app/api/run/route.tsx
+import { cd } from "client";
+
+export async function POST(request: Request) {
+    const { deploymentId } = await request.json();
+
+    const headersList = headers();
+    const host = headersList.get("host") || "";
+    const protocol = headersList.get("x-forwarded-proto") || "";
+    let endpoint = `${protocol}://${host}`;
+
+    const { runId } = await cd.run.deployment.queue({
+        deploymentId: deploymentId,
+        webhook: `${endpoint}/api/webhook`,
+    });
+}
+```
+
+Make sure you have a route that can handle the webhook. For the response body, check the docs [here](https://api.comfydeploy.com/#model/workflowrunwebhookbody)
+
+```typescript src/app/api/webhook/route.tsx
+import { WorkflowRunWebhookBody$inboundSchema as WebhookParser } from "comfydeploy/models/components";
+import { NextResponse } from "next/server";
+
+export async function POST(request: Request) {
+    const parseData = WebhookParser.safeParse(
+      await request.json(),
+    );
+
+    if (!parseData.success) {
+      return NextResponse.json({ message: "error" }, { status: 400 });
+    }
+
+    const data = parseData.data;
+
+    const { status, runId, outputs } = data;
+
+    // Do your things
+    console.log(status, runId, outputs);
+
+    // Return success to ComfyDeploy
+    return NextResponse.json({ message: "success" }, { status: 200 });
+}
+```
+
+## Enforcing Webhook Security
+
+To enhance the security of your webhook endpoint, you can implement a secret token verification using the `jose` library, which is compatible with edge environments. This method uses a shared secret to generate and verify signatures for each webhook request.
+
+Here's how to modify your code to include this security measure:
+
+```typescript src/app/api/run/route.tsx
+import * as jose from 'jose';
+import { cd } from "client";
+
+const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET; // Store this securely, e.g., in environment variables
+
+export async function POST(request: Request) {
+    // ... existing code ...
+
+    const timestamp = Date.now().toString();
+    const secret = new TextEncoder().encode(WEBHOOK_SECRET);
+    const signature = await new jose.SignJWT({ deploymentId })
+        .setProtectedHeader({ alg: 'HS256' })
+        .setIssuedAt(timestamp)
+        .sign(secret);
+
+    const { runId } = await client.run.queue({
+        deploymentId: deploymentId,
+        webhook: `${endpoint}/api/webhook?timestamp=${timestamp}&signature=${encodeURIComponent(signature)}`,
+    });
+}
+```
+
+Then, update your webhook handler to verify the signature:
+
+```typescript src/app/api/webhook/route.tsx
+import { WorkflowRunWebhookBody$inboundSchema as WebhookParser } from "comfydeploy/models/components";
+import { NextResponse } from "next/server";
+import * as jose from 'jose';
+
+const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
+const MAX_TIMESTAMP_DIFF = 60 * 60 * 1000; // 1 hour
+
+export async function POST(request: Request) {
+    const url = new URL(request.url);
+    const timestamp = url.searchParams.get('timestamp');
+    const signature = url.searchParams.get('signature');
+
+    if (!timestamp || !signature) {
+        return NextResponse.json({ message: "Missing query parameters" }, { status: 400 });
+    }
+
+    // Check if the timestamp is recent
+    if (Math.abs(Date.now() - parseInt(timestamp)) > MAX_TIMESTAMP_DIFF) {
+        return NextResponse.json({ message: "Timestamp too old" }, { status: 400 });
+    }
+
+    // const body = await request.json();
+    const secret = new TextEncoder().encode(WEBHOOK_SECRET);
+
+    try {
+        const { payload } = await jose.jwtVerify(signature, secret, {
+            algorithms: ['HS256'],
+        });
+
+        if (payload.deploymentId !== body.deploymentId) {
+            throw new Error('Deployment ID mismatch');
+        }
+
+        if (payload.iat !== parseInt(timestamp)) {
+            throw new Error('Timestamp mismatch');
+        }
+    } catch (error) {
+        return NextResponse.json({ message: "Invalid signature" }, { status: 401 });
+    }
+
+    const parseData = WebhookParser.safeParse(
+      await request.json(),
+    );
+
+    if (!parseData.success) {
+      return NextResponse.json({ message: "error" }, { status: 400 });
+    }
+
+    const data = parseData.data;
+
+    const { status, runId, outputs } = data;
+
+    // Do your things
+    console.log(status, runId, outputs);
+
+    // Return success to ComfyDeploy
+    return NextResponse.json({ message: "success" }, { status: 200 });
+}
+```

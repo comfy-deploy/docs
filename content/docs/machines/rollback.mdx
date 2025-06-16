@@ -1,0 +1,55 @@
+---
+title: "Rollback"
+description: "Learn how to perform a Rollback on your latest machine and quickly roll back to a previous deployed machine version."
+---
+
+> **Warning:** This is still a **beta** feature. **Use with caution.**
+
+> **Note:** Features is only available for users on **Business plans**. [Click here to learn more](https://www.comfydeploy.com/pricing)
+
+ComfyDeploy allows you to perform a Rollback as a way to quickly revert to a previous deployed machine environment.
+This can be useful in situations where require a swift recovery from any rebuild incidents,
+e.g. error install the custom nodes or fail to load those nodes into the machine.
+
+Please keep in mind that if you want to perform a rollback:
+
+- The "rollback" is more likely to "rebuild" the machine with the snapshots, configurations,
+  and settings of your previous deployed machine version.
+
+  > **Note:** It is **not guaranteed** to be the exact same as the previous deployed machine version.
+  > 
+  > There is still have unexpected behaviors for deploying previous machine version, such as the machine builder is updated with breaking changes; some custom node contains legacy libraries or codes that might not be able to run later; etc.
+
+- You **cannot** perform a rollback if your machine is currently building.
+- You **cannot** perform a rollback to the machine version that is in error state.
+
+## How to rollback a machine
+
+To initiate a Rollback from the machine page:
+
+### Step 1: Check out machine deployments
+
+Among the list of the machine versions on the **deployment** page, select the machine version you want to rollback to, and click the menu button to select the "Rollback" action.
+
+![Select the Rollback button from the machine version action menu](https://cd-misc.s3.us-east-2.amazonaws.com/docs/machine_version_action.png)
+
+### Step 2: Verify the information
+
+After selecting the "Rollback" action, a dialog will be shown for you to confirm the rollback action.
+
+You will able to see the details of the comparison between the current and the selected machine, including:
+- **Basic information**, i.e. GPU, ComfyUI version, Python version, etc.
+- **Advance scaling settings**, i.e. max parallel GPU, queue size, warm time, etc.
+- **Custom nodes & commands**, i.e. adding or removing custom nodes, modifying the hashes, reordering the list, etc.
+
+![Dialog showing the comparison between the current and the selected machine version](https://cd-misc.s3.us-east-2.amazonaws.com/docs/machine_rollback_dialog.png)
+
+### Step 3: Successful Rollback
+
+Once you perform the rollback, the machine will start rebuilding with the snapshot and configuration of the selected machine version. It may take some times to rebuild, but after that, wola! All the machine configurations would be restored and you can continue to work on your machine.
+
+But, keep in mind that **always keep your machine to the latest version**, would be a good practice to avoid any unexpected issues!
+
+![Machine overview page, will a warning message to remind you that the machine is in the rollback state.](https://cd-misc.s3.us-east-2.amazonaws.com/docs/machine_overview_rollback.png)
+
+> **Note:** If you have any questions of Rollback, feel free to contact us via [Discord](https://discord.com/invite/ygb6VZwaMt) or email us at `founders@comfydeploy.com`.
