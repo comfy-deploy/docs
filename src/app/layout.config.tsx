@@ -14,7 +14,7 @@ export const baseOptions: BaseLayoutProps = {
         <svg
           width="24"
           height="24"
-          viewBox="0 0 236 236"
+          viewBox="0 40 236 156"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
           aria-label="ComfyDeploy Logo"
