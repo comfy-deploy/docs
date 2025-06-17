@@ -15,6 +15,13 @@ export const metadata: Metadata = {
   },
   description: 'Comprehensive guides and API references for ComfyDeploy',
   metadataBase: new URL('https://docs.comfydeploy.com'),
+  icons: {
+    icon: [
+      { url: '/icon-light.svg', media: '(prefers-color-scheme: light)' },
+      { url: '/icon.svg', media: '(prefers-color-scheme: dark)' },
+      { url: '/icon-light.svg' },
+    ],
+  },
 };
 
 export default function Layout({ children }: { children: ReactNode }) {
