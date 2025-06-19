@@ -1,13 +1,14 @@
-import { source } from '@/lib/source';
+import { source } from "@/lib/source";
 import {
   DocsPage,
   DocsBody,
   DocsDescription,
   DocsTitle,
-} from 'fumadocs-ui/page';
-import { notFound } from 'next/navigation';
-import { createRelativeLink } from 'fumadocs-ui/mdx';
-import { getMDXComponents } from '@/mdx-components';
+} from "fumadocs-ui/page";
+import { notFound } from "next/navigation";
+import type { Metadata } from "next";
+import { createRelativeLink } from "fumadocs-ui/mdx";
+import { getMDXComponents } from "@/mdx-components";
 
 export default async function Page(props: {
   params: Promise<{ slug?: string[] }>;
@@ -40,13 +41,32 @@ export async function generateStaticParams() {
 
 export async function generateMetadata(props: {
   params: Promise<{ slug?: string[] }>;
-}) {
+}): Promise<Metadata> {
   const params = await props.params;
   const page = source.getPage(params.slug);
   if (!page) notFound();
+  const slug = params.slug?.join("/") ?? "";
+  const url = `https://docs.comfydeploy.com/docs/${slug}`;
 
   return {
     title: page.data.title,
     description: page.data.description,
+    keywords: [
+      "ComfyDeploy",
+      page.data.title,
+      "ComfyUI",
+      "AI Image Generation",
+      "Stable Diffusion",
+      "Workflow Automation",
+      "Model Deployment",
+    ],
+    authors: [{ name: "ComfyDeploy" }],
+    publisher: "ComfyDeploy",
+    openGraph: {
+      title: page.data.title,
+      description: page.data.description,
+      url,
+      images: [{ url: "/images/cover.png" }],
+    },
   };
 }
