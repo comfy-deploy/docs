@@ -1,0 +1,9 @@
+{
+  "title": "Run Management",
+  "pages": [
+    "deployment-queue",
+    "get-run", 
+    "cancel-run"
+  ],
+  "defaultOpen": true
+}
