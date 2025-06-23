@@ -1,0 +1,80 @@
+---
+title: Run Update
+description: Receive run status updates via webhook
+openapi: |
+  openapi: 3.0.0
+  info:
+    title: ComfyDeploy API
+    version: 1.0.0
+  webhooks:
+    runStatusUpdate:
+      post:
+        summary: Run Status Update Webhook
+        description: Webhook endpoint to receive real-time updates about run status changes
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  run_id:
+                    type: string
+                    example: "run_12345"
+                  status:
+                    type: string
+                    enum: ["queued", "running", "completed", "failed", "cancelled"]
+                    example: "completed"
+                  deployment_id:
+                    type: string
+                    example: "deployment_67890"
+                  updated_at:
+                    type: string
+                    format: date-time
+                    example: "2024-01-15T10:32:15Z"
+                  outputs:
+                    type: object
+                    nullable: true
+                    properties:
+                      result:
+                        type: string
+                        example: "output_data"
+                  error:
+                    type: string
+                    nullable: true
+                    description: "Only present if status is 'failed'"
+        responses:
+          '200':
+            description: Webhook received successfully
+---
+
+Configure webhook endpoints to receive real-time updates about run status changes.
+
+## Webhook Configuration
+
+When queuing a run, you can specify a `webhook_url` to receive status updates.
+
+## Webhook Payload
+
+Your webhook endpoint will receive POST requests with the following payload:
+
+```json
+{
+  "run_id": "run_12345",
+  "status": "completed",
+  "deployment_id": "deployment_67890",
+  "updated_at": "2024-01-15T10:32:15Z",
+  "outputs": {
+    "result": "output_data"
+  },
+  "error": null // only present if status is "failed"
+}
+```
+
+## Status Values
+
+- `queued`: Run is waiting to be processed
+- `running`: Run is currently executing
+- `completed`: Run finished successfully
+- `failed`: Run encountered an error
+- `cancelled`: Run was cancelled by user

@@ -1,0 +1,94 @@
+---
+title: Queue Run
+description: Queue a new run for a deployment
+openapi: |
+  openapi: 3.0.0
+  info:
+    title: ComfyDeploy API
+    version: 1.0.0
+  paths:
+    /run/deployment/queue:
+      post:
+        summary: Queue Run
+        description: Queue a new workflow run for a specific deployment with custom input parameters
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - deployment_id
+                  - inputs
+                properties:
+                  deployment_id:
+                    type: string
+                    example: "deployment_67890"
+                    description: The unique identifier of the deployment
+                  inputs:
+                    type: object
+                    example:
+                      input_name: "input_value"
+                      another_input: "another_value"
+                    description: Custom input parameters for the workflow
+                  webhook_url:
+                    type: string
+                    format: uri
+                    example: "https://your-app.com/webhook"
+                    description: Optional webhook URL for status updates
+        responses:
+          '200':
+            description: Successfully queued run
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    run_id:
+                      type: string
+                      example: "run_12345"
+                    status:
+                      type: string
+                      example: "queued"
+                    deployment_id:
+                      type: string
+                      example: "deployment_67890"
+                    created_at:
+                      type: string
+                      format: date-time
+                      example: "2024-01-15T10:30:00Z"
+---
+
+Queue a new workflow run for a specific deployment with custom input parameters.
+
+## Endpoint
+
+```
+POST /run/deployment/queue
+```
+
+## Request Body
+
+```json
+{
+  "deployment_id": "deployment_67890",
+  "inputs": {
+    "input_name": "input_value",
+    "another_input": "another_value"
+  },
+  "webhook_url": "https://your-app.com/webhook" // optional
+}
+```
+
+## Response
+
+Returns the created run information including the run ID and initial status.
+
+```json
+{
+  "run_id": "run_12345",
+  "status": "queued",
+  "deployment_id": "deployment_67890",
+  "created_at": "2024-01-15T10:30:00Z"
+}
+```

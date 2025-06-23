@@ -7,3 +7,13 @@ export const source = loader({
   baseUrl: '/docs',
   source: docs.toFumadocsSource(),
 });
+
+export const dashboardSource = loader({
+  baseUrl: '/docs/dashboard',
+  source: docs.toFumadocsSource(),
+});
+
+export const apiSource = loader({
+  baseUrl: '/docs/api', 
+  source: docs.toFumadocsSource(),
+});

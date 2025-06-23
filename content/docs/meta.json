@@ -1,64 +1,26 @@
 {
-  "title": "Dashboard",
   "pages": [
     "introduction",
-    {
-      "title": "Workspace",
-      "pages": ["overview"]
-    },
-    {
-      "title": "Workflows", 
-      "pages": ["import"]
-    },
-    {
-      "title": "Machines",
-      "pages": ["environment", "scaling", "versioning", "rollback"]
-    },
-    {
-      "title": "Deployments",
-      "pages": ["create", "inputs"]
-    },
-    {
-      "title": "Team",
-      "pages": ["roles", "playground"]
-    },
-    {
-      "title": "Data",
-      "pages": ["data-flow"]
-    },
-    {
-      "title": "Models",
-      "pages": ["download"]
-    },
-    {
-      "title": "Integration",
-      "pages": ["custom-s3"]
-    },
-    {
-      "title": "Next.js",
-      "pages": ["get-started", "callback"]
-    },
-    {
-      "title": "Upgrade",
-      "pages": ["v2"]
-    },
-    "---",
-    {
-      "title": "API Reference",
-      "pages": [
-        {
-          "title": "Run Management",
-          "pages": ["get-run", "queue-run", "cancel-run"]
-        },
-        {
-          "title": "Deployments", 
-          "pages": ["workflow-inputs"]
-        },
-        {
-          "title": "Webhooks",
-          "pages": ["run-update-webhook"]
-        }
-      ]
-    }
+    "overview",
+    "import",
+    "environment",
+    "scaling", 
+    "versioning",
+    "rollback",
+    "create",
+    "inputs",
+    "roles",
+    "playground",
+    "data-flow",
+    "download",
+    "custom-s3",
+    "get-started",
+    "callback",
+    "v2",
+    "get-run",
+    "queue-run", 
+    "cancel-run",
+    "workflow-inputs",
+    "run-update-webhook"
   ]
 }

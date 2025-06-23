@@ -1,0 +1,67 @@
+---
+title: Cancel Run
+description: Cancel a running workflow execution
+openapi: |
+  openapi: 3.0.0
+  info:
+    title: ComfyDeploy API
+    version: 1.0.0
+  paths:
+    /run/{run_id}/cancel:
+      post:
+        summary: Cancel Run
+        description: Cancel a workflow run that is currently queued or running
+        parameters:
+          - name: run_id
+            in: path
+            required: true
+            schema:
+              type: string
+            description: The unique identifier of the run to cancel
+        responses:
+          '200':
+            description: Successfully cancelled run
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    run_id:
+                      type: string
+                      example: "run_12345"
+                    status:
+                      type: string
+                      example: "cancelled"
+                    cancelled_at:
+                      type: string
+                      format: date-time
+                      example: "2024-01-15T10:31:30Z"
+                    message:
+                      type: string
+                      example: "Run cancelled successfully"
+---
+
+Cancel a workflow run that is currently queued or running.
+
+## Endpoint
+
+```
+POST /run/{run_id}/cancel
+```
+
+## Parameters
+
+- `run_id` (path, required): The unique identifier of the run to cancel
+
+## Response
+
+Returns confirmation of the cancellation request.
+
+```json
+{
+  "run_id": "run_12345",
+  "status": "cancelled",
+  "cancelled_at": "2024-01-15T10:31:30Z",
+  "message": "Run cancelled successfully"
+}
+```
