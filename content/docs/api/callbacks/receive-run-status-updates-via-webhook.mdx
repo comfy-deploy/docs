@@ -1,5 +1,35 @@
 ---
 title: Run Update
 description: Receive run status updates via webhook
-openapi: webhook {$request.body#/webhook}
 ---
+
+Configure webhook endpoints to receive real-time updates about run status changes.
+
+## Webhook Configuration
+
+When queuing a run, you can specify a `webhook_url` to receive status updates.
+
+## Webhook Payload
+
+Your webhook endpoint will receive POST requests with the following payload:
+
+```json
+{
+  "run_id": "run_12345",
+  "status": "completed",
+  "deployment_id": "deployment_67890",
+  "updated_at": "2024-01-15T10:32:15Z",
+  "outputs": {
+    "result": "output_data"
+  },
+  "error": null // only present if status is "failed"
+}
+```
+
+## Status Values
+
+- `queued`: Run is waiting to be processed
+- `running`: Run is currently executing
+- `completed`: Run finished successfully
+- `failed`: Run encountered an error
+- `cancelled`: Run was cancelled by user

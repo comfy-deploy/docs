@@ -1,11 +1,32 @@
 ---
 title: Workflow Inputs
 description: Get available inputs for a deployment
-openapi: get /deployments/{deployment_id}/inputs
 ---
 
 Get the available input parameters for a specific deployment. This endpoint returns the schema of inputs that can be used when queuing runs for this deployment.
 
+## Endpoint
+
+```
+GET /deployments/{deployment_id}/inputs
+```
+
+## Parameters
+
+- `deployment_id` (path, required): The deployment ID
+
 ## Response
 
 The response includes all the external input nodes configured in the workflow, along with their types, default values, and validation rules.
+
+```json
+{
+  "inputs": {
+    "input_name": {
+      "type": "string",
+      "default": "default_value",
+      "description": "Input description"
+    }
+  }
+}
+```

@@ -1,5 +1,34 @@
 ---
 title: Get Run
 description: Get the status and details of a specific run
-openapi: get /run/{run_id}
 ---
+
+Get the status and details of a specific workflow run.
+
+## Endpoint
+
+```
+GET /run/{run_id}
+```
+
+## Parameters
+
+- `run_id` (path, required): The unique identifier of the run
+
+## Response
+
+Returns detailed information about the specified run including its current status, execution details, and results.
+
+```json
+{
+  "id": "run_12345",
+  "status": "completed",
+  "deployment_id": "deployment_67890",
+  "created_at": "2024-01-15T10:30:00Z",
+  "started_at": "2024-01-15T10:30:05Z",
+  "completed_at": "2024-01-15T10:32:15Z",
+  "outputs": {
+    "result": "output_data"
+  }
+}
+```
