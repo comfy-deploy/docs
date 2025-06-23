@@ -1,7 +1,0 @@
-{
-  "title": "Webhooks",
-  "pages": [
-    "receive-run-status-updates-via-webhook"
-  ],
-  "defaultOpen": true
-}

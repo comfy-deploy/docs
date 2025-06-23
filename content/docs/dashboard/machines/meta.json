@@ -1,5 +1,0 @@
-{
-  "title": "Machines",
-  "pages": ["environment", "scaling", "versioning", "rollback"],
-  "defaultOpen": true
-} 
