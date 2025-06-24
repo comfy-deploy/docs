@@ -14,11 +14,4 @@ export const source = loader({
 });
 
 // Create OpenAPI instance for API playground
-export const openapi = createOpenAPI({
-  documents: [
-    {
-      documentOrPath: './comfydeploy-openapi.yaml',
-      id: 'comfydeploy-openapi.yaml',
-    },
-  ],
-});
+export const openapi = createOpenAPI();

@@ -7,8 +7,8 @@ import { FileText, Link } from "fumadocs-ui/internal/icons";
 
 function filterTree(tree: PageTree.Root, isApiPage: boolean): PageTree.Root {
   if (isApiPage) {
-    const apiRoot = tree.children.find((child) => child.url?.startsWith('/docs/api'));
-    if (apiRoot && (apiRoot.type === 'folder' || apiRoot.type === 'page')) {
+    const apiRoot = tree.children.find((child) => 'url' in child && child.url?.startsWith('/docs/api'));
+    if (apiRoot && apiRoot.type === 'folder') {
       return { ...apiRoot, children: apiRoot.children ?? [] } as PageTree.Root;
     }
   }
@@ -16,12 +16,12 @@ function filterTree(tree: PageTree.Root, isApiPage: boolean): PageTree.Root {
   return {
     ...tree,
     children: tree.children.filter((child) => {
-      if (child.url?.startsWith('/docs/api')) return false;
+      if ('url' in child && child.url?.startsWith('/docs/api')) return false;
 
       if (child.type === 'folder') {
         const filtered = {
           ...child,
-          children: child.children.filter((sub) => !sub.url?.startsWith('/docs/api')),
+          children: child.children.filter((sub) => !('url' in sub) || !sub.url?.startsWith('/docs/api')),
         };
         return filtered.children.length > 0;
       }
@@ -31,14 +31,15 @@ function filterTree(tree: PageTree.Root, isApiPage: boolean): PageTree.Root {
   };
 }
 
-export default function Layout({
+export default async function Layout({
   children,
   params,
 }: {
   children: ReactNode;
-  params: { slug?: string[] };
+  params: Promise<{ slug?: string[] }>;
 }) {
-  const slug = params.slug?.[0];
+  const resolvedParams = await params;
+  const slug = resolvedParams.slug?.[0];
   const isApiPage = slug === "api";
 
   const tree = filterTree(source.pageTree, isApiPage);
