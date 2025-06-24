@@ -6,5 +6,6 @@
     "run/cancel-run",
     "callbacks/receive-run-status-updates-via-webhook"
   ],
-  "defaultOpen": true
+  "defaultOpen": true,
+  "root": true
 } 

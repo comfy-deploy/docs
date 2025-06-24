@@ -1,17 +1,23 @@
 {
-  "title": "ComfyDeploy Documentation",
+  "title": "Dashboard",
   "pages": [
+    "---Getting Started---",
     "introduction",
     "workspace/overview",
     "workflows/import",
+    "---Manage Resources---",
     "machines",
     "models/download",
     "deployments",
+    "---Team---",
     "team",
+    "---Guides---",
     "data/data-flow",
     "integration/custom-s3",
     "nextjs",
+    "---API---",
     "api-docs",
+    "---Upgrade---",
     "upgrade/v2"
   ],
   "root": true
