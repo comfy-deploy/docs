@@ -1,5 +1,7 @@
 {
   "title": "API Reference",
+  "description": "Endpoints to manage workflows",
+  "icon": "link",
   "pages": [
     "run/deployment-queue",
     "run/get-run",

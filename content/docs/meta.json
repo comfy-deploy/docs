@@ -1,5 +1,7 @@
 {
   "title": "Dashboard",
+  "description": "Guides and workspace overview",
+  "icon": "file-text",
   "pages": [
     "---Getting Started---",
     "introduction",
