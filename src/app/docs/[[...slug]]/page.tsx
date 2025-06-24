@@ -5,7 +5,7 @@ import {
   DocsDescription,
   DocsTitle,
 } from "fumadocs-ui/page";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { createRelativeLink } from "fumadocs-ui/mdx";
 import { getMDXComponents } from "@/mdx-components";
@@ -14,6 +14,12 @@ export default async function Page(props: {
   params: Promise<{ slug?: string[] }>;
 }) {
   const params = await props.params;
+  
+  // Handle the empty slug case - redirect to introduction
+  if (!params.slug || params.slug.length === 0) {
+    redirect('/docs/introduction');
+  }
+  
   const page = source.getPage(params.slug);
   if (!page) notFound();
 
