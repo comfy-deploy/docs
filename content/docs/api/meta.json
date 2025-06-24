@@ -1,0 +1,16 @@
+{
+  "title": "API Reference",
+  "description": "Endpoints to manage workflows",
+  "icon": "link",
+  "pages": [
+    "index",
+    "---Run Management---",
+    "queueRun",
+    "getRun",
+    "cancelRun",
+    "---Webhooks---",
+    "runUpdateWebhook"
+  ],
+  "defaultOpen": true,
+  "root": true
+} 

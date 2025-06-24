@@ -1,8 +1,0 @@
----
-title: Run Update
-description: Receive run status updates via webhook
-openapi: webhook {$request.body#/webhook}
----
-
-Configure a webhook endpoint to receive JSON updates whenever the run state
-changes. Each event is sent as a POST request containing the run payload.
