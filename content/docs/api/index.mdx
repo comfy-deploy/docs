@@ -1,0 +1,42 @@
+---
+title: API Reference
+description: Complete API reference for ComfyDeploy
+---
+
+# ComfyDeploy API Reference
+
+Welcome to the ComfyDeploy API documentation. This API allows you to programmatically manage and run your ComfyUI workflows in the cloud.
+
+## Authentication
+
+All API requests require authentication using a Bearer token. Include your API key in the `Authorization` header:
+
+```bash
+Authorization: Bearer YOUR_API_KEY
+```
+
+## Base URL
+
+```
+https://api.comfydeploy.com/api
+```
+
+## Available Endpoints
+
+### Run Management
+
+- [Get Run](/docs/api/getRun) - Get details of a specific run by ID
+- [Queue Run](/docs/api/queueRun) - Create a new deployment run
+- [Cancel Run](/docs/api/cancelRun) - Cancel a running deployment
+
+### Webhooks
+
+- [Run Update Webhook](/docs/api/runUpdateWebhook) - Receive run status updates via webhook
+
+## Rate Limits
+
+API requests are rate limited to ensure fair usage. Please refer to your account dashboard for your specific rate limits.
+
+## Need Help?
+
+If you have any questions or need assistance, please contact our support team. 

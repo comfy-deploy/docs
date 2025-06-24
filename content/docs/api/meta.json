@@ -3,10 +3,13 @@
   "description": "Endpoints to manage workflows",
   "icon": "link",
   "pages": [
-    "run/deployment-queue",
-    "run/get-run",
-    "run/cancel-run",
-    "callbacks/receive-run-status-updates-via-webhook"
+    "index",
+    "---Run Management---",
+    "queueRun",
+    "getRun",
+    "cancelRun",
+    "---Webhooks---",
+    "runUpdateWebhook"
   ],
   "defaultOpen": true,
   "root": true

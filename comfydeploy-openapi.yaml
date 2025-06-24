@@ -1,0 +1,352 @@
+openapi: 3.0.0
+info:
+  title: ComfyDeploy API
+  version: 2.0.0
+  description: API for managing ComfyDeploy runs and deployments
+servers:
+  - url: https://api.comfydeploy.com/api
+    description: Production server
+  - url: https://staging.api.comfydeploy.com/api
+    description: Staging server
+  - url: http://localhost:3011/api
+    description: Local development server
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    CreateRunResponse:
+      type: object
+      properties:
+        run_id:
+          type: string
+          format: uuid
+          description: The ID of the run, use this to get the run status and outputs
+      required:
+        - run_id
+    DeploymentRunRequest:
+      type: object
+      properties:
+        deployment_id:
+          type: string
+          format: uuid
+          example: "15e79589-12c9-453c-a41a-348fdd7de957"
+        inputs:
+          type: object
+          additionalProperties: true
+          default: {}
+          example:
+            prompt: "A beautiful landscape"
+            seed: 42
+        webhook:
+          type: string
+          example: "https://myapp.com/webhook"
+        webhook_intermediate_status:
+          type: boolean
+          default: false
+          example: true
+        gpu:
+          type: string
+          enum: [T4, L4, A10G, L40S, A100, A100-80GB, H100]
+          description: The GPU to override the machine's default GPU
+      required:
+        - deployment_id
+    WorkflowRunModel:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        workflow_version_id:
+          type: string
+          format: uuid
+          nullable: true
+        workflow_inputs:
+          type: object
+          nullable: true
+        workflow_id:
+          type: string
+          format: uuid
+        workflow_api:
+          type: object
+          nullable: true
+        machine_id:
+          type: string
+          format: uuid
+          nullable: true
+        origin:
+          type: string
+        status:
+          type: string
+        ended_at:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        queued_at:
+          type: string
+          format: date-time
+          nullable: true
+        started_at:
+          type: string
+          format: date-time
+          nullable: true
+        gpu_event_id:
+          type: string
+          nullable: true
+        gpu:
+          type: string
+          nullable: true
+        machine_version:
+          type: string
+          nullable: true
+        machine_type:
+          type: string
+          nullable: true
+        modal_function_call_id:
+          type: string
+          nullable: true
+        user_id:
+          type: string
+          nullable: true
+        org_id:
+          type: string
+          nullable: true
+        live_status:
+          type: string
+          nullable: true
+        progress:
+          type: number
+          default: 0
+        is_realtime:
+          type: boolean
+          default: false
+        webhook:
+          type: string
+          nullable: true
+        webhook_status:
+          type: string
+          nullable: true
+        webhook_intermediate_status:
+          type: boolean
+          default: false
+        outputs:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkflowRunOutputModel'
+          default: []
+        number:
+          type: integer
+        duration:
+          type: number
+          nullable: true
+        cold_start_duration:
+          type: number
+          nullable: true
+        cold_start_duration_total:
+          type: number
+          nullable: true
+        run_duration:
+          type: number
+          nullable: true
+    WorkflowRunOutputModel:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        run_id:
+          type: string
+          format: uuid
+        data:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              oneOf:
+                - $ref: '#/components/schemas/MediaItem'
+                - type: string
+                - type: boolean
+        node_meta:
+          type: object
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        type:
+          type: string
+          nullable: true
+        node_id:
+          type: string
+          nullable: true
+    MediaItem:
+      type: object
+      properties:
+        url:
+          type: string
+        type:
+          type: string
+        filename:
+          type: string
+        is_public:
+          type: boolean
+          nullable: true
+        subfolder:
+          type: string
+          nullable: true
+        upload_duration:
+          type: number
+          nullable: true
+      required:
+        - url
+        - type
+        - filename
+    ValidationError:
+      type: object
+      properties:
+        loc:
+          type: array
+          items:
+            oneOf:
+              - type: string
+              - type: integer
+        msg:
+          type: string
+        type:
+          type: string
+      required:
+        - loc
+        - msg
+        - type
+    HTTPValidationError:
+      type: object
+      properties:
+        detail:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationError'
+security:
+  - bearerAuth: []
+paths:
+  /run/{run_id}:
+    get:
+      summary: Get Run
+      description: Get details of a specific run by ID
+      operationId: getRun
+      parameters:
+        - name: run_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: The ID of the run to retrieve
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowRunModel'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /run/deployment/queue:
+    post:
+      summary: Queue Run
+      description: Create a new deployment run with the given parameters
+      operationId: queueRun
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeploymentRunRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateRunResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /run/{run_id}/cancel:
+    post:
+      summary: Cancel Run
+      description: Cancel a running deployment
+      operationId: cancelRun
+      parameters:
+        - name: run_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: The ID of the run to cancel
+      responses:
+        '200':
+          description: Run cancelled successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+        '404':
+          description: Run not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /webhooks/run-update:
+    post:
+      summary: Receive Run Status Updates
+      description: Webhook endpoint to receive run status updates
+      operationId: runUpdateWebhook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                run_id:
+                  type: string
+                  format: uuid
+                status:
+                  type: string
+                  enum: [queued, processing, completed, failed, cancelled]
+                outputs:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/WorkflowRunOutputModel'
+                progress:
+                  type: number
+                  minimum: 0
+                  maximum: 100
+      responses:
+        '200':
+          description: Webhook received successfully
+      security: []  # Webhooks typically don't use bearer auth 
