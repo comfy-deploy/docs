@@ -6,33 +6,27 @@ import type { PageTree } from "fumadocs-core/server";
 import { FileText, Link } from "fumadocs-ui/internal/icons";
 
 function filterTree(tree: PageTree.Root, isApiPage: boolean): PageTree.Root {
+  if (isApiPage) {
+    const apiRoot = tree.children.find((child) => child.url?.startsWith('/docs/api'));
+    if (apiRoot && (apiRoot.type === 'folder' || apiRoot.type === 'page')) {
+      return { ...apiRoot, children: apiRoot.children ?? [] } as PageTree.Root;
+    }
+  }
+
   return {
     ...tree,
     children: tree.children.filter((child) => {
-      // Check if this is an API page node by looking at the URL
-      if (child.type === 'page' && child.url) {
-        const isApiNode = child.url.includes('/api/');
-        return isApiPage ? isApiNode : !isApiNode;
-      }
-      
+      if (child.url?.startsWith('/docs/api')) return false;
+
       if (child.type === 'folder') {
-        // Filter folder children recursively
-        const filteredFolder = {
+        const filtered = {
           ...child,
-          children: child.children.filter((subChild) => {
-            if (subChild.type === 'page' && subChild.url) {
-              const isApiNode = subChild.url.includes('/api/');
-              return isApiPage ? isApiNode : !isApiNode;
-            }
-            return !isApiPage; // Include folders in non-API pages
-          })
+          children: child.children.filter((sub) => !sub.url?.startsWith('/docs/api')),
         };
-        
-        // Only include folders that have children after filtering
-        return filteredFolder.children.length > 0;
+        return filtered.children.length > 0;
       }
-      
-      return !isApiPage;
+
+      return true;
     }),
   };
 }
