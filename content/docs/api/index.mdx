@@ -25,13 +25,37 @@ https://api.comfydeploy.com/api
 
 ### Run Management
 
-- [Get Run](/docs/api/getRun) - Get details of a specific run by ID
-- [Queue Run](/docs/api/queueRun) - Create a new deployment run
-- [Cancel Run](/docs/api/cancelRun) - Cancel a running deployment
+<Cards>
+<Card href="/docs/api/getRun">
+**Get Run** <span className="text-sm text-green-500 font-mono ml-1">GET</span>
+
+Get details of a specific run by ID
+
+</Card>
+
+<Card href="/docs/api/queueRun">
+**Queue Run** <span className="text-sm text-blue-600 dark:text-blue-400 font-mono ml-1">POST</span>
+
+Create a new deployment run
+
+</Card>
+
+<Card href="/docs/api/cancelRun">
+**Cancel Run** <span className="text-sm text-blue-600 dark:text-blue-400 font-mono ml-1">POST</span>
+
+Cancel a running deployment
+
+</Card>
+</Cards>
 
 ### Webhooks
 
-- [Run Update Webhook](/docs/api/runUpdateWebhook) - Receive run status updates via webhook
+<Card href="/docs/api/runUpdateWebhook">
+**Run Update Webhook** <span className="text-sm text-blue-600 dark:text-blue-400 font-mono ml-1">POST</span>
+
+Receive run status updates via webhook
+
+</Card>
 
 ## Rate Limits
 
@@ -39,4 +63,4 @@ API requests are rate limited to ensure fair usage. Please refer to your account
 
 ## Need Help?
 
-If you have any questions or need assistance, please contact our support team. 
+If you have any questions or need assistance, please contact our support team.
