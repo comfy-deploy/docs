@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import { baseOptions } from '@/app/layout.config';
 import { source } from '@/lib/source';
 import type { PageTree } from 'fumadocs-core/server';
-import { FileText, Link } from 'fumadocs-ui/icons';
+import { FileText, Link } from 'fumadocs-ui/internal/icons';
 
 function filterTree(tree: PageTree.Root, api: boolean): PageTree.Root {
   return {

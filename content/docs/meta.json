@@ -17,8 +17,6 @@
     "data/data-flow",
     "integration/custom-s3",
     "nextjs",
-    "---API---",
-    "api-docs",
     "---Upgrade---",
     "upgrade/v2"
   ],
