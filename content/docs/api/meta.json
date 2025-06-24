@@ -4,6 +4,7 @@
   "icon": "link",
   "pages": [
     "index",
+    "inputs",
     "---Run Management---",
     "queueRun",
     "getRun",
@@ -11,6 +12,5 @@
     "---Webhooks---",
     "runUpdateWebhook"
   ],
-  "defaultOpen": true,
   "root": true
 } 

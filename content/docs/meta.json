@@ -11,6 +11,8 @@
     "machines",
     "models/download",
     "deployments",
+    "---API---",
+    "api",
     "---Team---",
     "team",
     "---Guides---",

@@ -1,5 +1,4 @@
 {
   "title": "Next.js",
-  "pages": ["get-started", "callback"],
-  "defaultOpen": true
+  "pages": ["get-started", "callback"]
 } 

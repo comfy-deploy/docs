@@ -1,5 +1,4 @@
 {
   "title": "Deployments",
-  "pages": ["create", "inputs"],
-  "defaultOpen": true
+  "pages": ["create", "inputs"]
 } 
