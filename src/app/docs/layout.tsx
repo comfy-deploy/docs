@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import { baseOptions } from '@/app/layout.config';
 import { source } from '@/lib/source';
 import type { PageTree } from 'fumadocs-core/server';
-import { FileText, Link } from 'fumadocs-ui/internal/icons';
+import { getSidebarTabs } from 'fumadocs-ui/utils/get-sidebar-tabs';
 
 function filterTree(tree: PageTree.Root, api: boolean): PageTree.Root {
   return {
@@ -26,22 +26,11 @@ export default function Layout({
   const isApi = slug === 'api-docs';
 
   const tree = filterTree(source.pageTree, isApi);
-  const tabs = [
-    {
-      url: '/docs/introduction',
-      title: 'Dashboard',
-      icon: <FileText className="size-4" />,
-      description: 'Guides',
-      props: { className: 'fd-tab-item' },
+  const tabs = getSidebarTabs(source.pageTree, {
+    transform(option) {
+      return { ...option, props: { className: 'fd-tab-item' } };
     },
-    {
-      url: '/docs/api-docs/run/deployment-queue',
-      title: 'API',
-      icon: <Link className="size-4" />,
-      description: 'API Reference',
-      props: { className: 'fd-tab-item' },
-    },
-  ];
+  });
 
   return (
     <DocsLayout tree={tree} {...baseOptions} sidebar={{ tabs }}>
