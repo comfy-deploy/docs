@@ -1,6 +1,5 @@
 import { DocsLayout } from 'fumadocs-ui/layouts/docs';
 import type { ReactNode } from 'react';
-import { usePathname } from 'next/navigation';
 import { baseOptions } from '@/app/layout.config';
 import { source } from '@/lib/source';
 import type { PageTree } from 'fumadocs-core/server';
@@ -16,9 +15,15 @@ function filterTree(tree: PageTree.Root, api: boolean): PageTree.Root {
   };
 }
 
-export default function Layout({ children }: { children: ReactNode }) {
-  const pathname = usePathname();
-  const isApi = pathname.startsWith('/docs/api');
+export default function Layout({
+  children,
+  params,
+}: {
+  children: ReactNode;
+  params: { slug?: string[] };
+}) {
+  const slug = params.slug?.[0];
+  const isApi = slug === 'api-docs';
 
   const tree = filterTree(source.pageTree, isApi);
   const tabs = [
