@@ -5,8 +5,9 @@
   "pages": [
     "---Getting Started---",
     "introduction",
-    "workspace/overview",
     "workflows/import",
+    "---Workspace---",
+    "workspace",
     "---Manage Resources---",
     "machines",
     "models/download",
