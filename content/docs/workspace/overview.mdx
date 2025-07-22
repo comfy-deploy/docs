@@ -1,28 +1,68 @@
 ---
-title: ComfyUI
-description: Use ComfyUI in the cloud with Comfy Deploy workspace
+title: Workspace Overview
+description: Experience the upgraded ComfyUI workspace with Dynamic Island navigation
 ---
 
-Comfy Deploy let's you use ComfyUI in the cloud. We call this the workspace which you can access for each of your workflows.
+## Why We Upgraded the Workspace
 
-The components that make a workspace are:
-1. [Machine environment](/v2/machines/environment) - custom nodes, python packages, etc.
-1. [Models folder](/v2/models/download) - checkpoint, vae, etc.
+The previous workspace UI/UX had significant usability issues that made workflow development cumbersome and inefficient. For example, if you wanted to install custom nodes or models while working in a session, you had to:
 
-> **Note:** The machine that your workflow is attached to needs to be built to use and see ComfyUI.
+1. Exit the current session
+2. Navigate to the corresponding machine page
+3. Edit the machine configuration
+4. Wait for the machine to rebuild
+5. Return to the workflow page
+6. Close and restart the session
 
-![ComfyUI static frontend](/images/workspace/static.png)
+This workflow was absolutely frustrating and clunky for developers who needed to iterate quickly on their ComfyUI workflows.
 
-## Sessions 
+## The New Dynamic Island Experience
 
-Sessions let you spin up a GPU in the cloud to run your workflow. 
+We've completely redesigned the workspace with a beautiful **Dynamic Island** navigation system that brings all essential features to your fingertips. The new interface features a glassy, modern design with smooth animations and intuitive organization.
 
-You will be asked to select a `timeout period`. The maximum amount of time your session will last for.
+![New Workspace Interface](https://cd-misc.s3.us-east-2.amazonaws.com/docs/workspace/workspace.png)
 
-> **Warning:** Currently you cannot add time while being in the session.
+## Dynamic Island Navigation
 
-> **Note:** If you want to add new models to your account. You can do so by going to the [storage page](https://www.comfydeploy.com/storage).
-> 
-> Once the model has finished downloading, you will need to restart your session to be able to use the model.
+The Dynamic Island organizes all workspace functionality into three main sections:
 
-![ComfyUI session](/images/workspace/session.png)
+<Cards>
+  <Card title="Workflow" href="/docs/workspace/sessions">
+    **Machine & Model Management**
+    
+    Configure your execution environment, install custom nodes, and manage models without leaving your session.
+  </Card>
+  
+  <Card title="Playground" href="/docs/workspace/playground">
+    **Gallery & Testing**
+    
+    Test your workflows, browse generated outputs, and organize your results with the integrated gallery.
+  </Card>
+  
+  <Card title="API" href="/docs/workspace/deployment">
+    **Requests & Deployment**
+    
+    Monitor API requests, view deployment status, and manage your workflow versions.
+  </Card>
+</Cards>
+
+## Workflow Version Management
+
+At the top left corner, you can easily:
+- **Switch between workflows** - Jump between different projects seamlessly
+- **Select workflow versions** - Choose specific versions of your current workflow
+- **Version control** - Track changes and manage your workflow evolution
+
+## Getting Started
+
+To begin working with your upgraded workspace:
+
+1. **Select your GPU configuration**
+   - Choose "CPU" for simple editing and cost savings
+   - Select a strong GPU for complex workflows and intensive computations
+
+2. **Set session duration** - Configure how long you need the session to run
+
+3. **Start your session** - Launch into the new Dynamic Island experience
+
+The new workspace eliminates the friction of the old workflow, allowing you to focus on creating amazing ComfyUI workflows without interruption.
