@@ -1,4 +1,4 @@
 {
   "title": "Machines",
-  "pages": ["environment", "scaling", "versioning", "rollback"]
-} 
+  "pages": ["environment", "on-premise-setup", "scaling", "versioning", "rollback"]
+}   
