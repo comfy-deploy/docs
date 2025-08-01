@@ -193,21 +193,11 @@ python main.py \
 
 ### 2. Configure Authentication (Optional)
 
-For secure deployments, set up authentication:
+For secure deployments, authentication is handled at the API level, not through ComfyUI CLI parameters:
 
 ```bash
-# Set auth token environment variable
-export COMFYUI_AUTH_TOKEN="your-secure-token"
-
-# Start with authentication
-python main.py \
-  --dont-print-server \
-  --enable-cors-header \
-  --listen \
-  --port 8188 \
-  --input-directory /private_models/input \
-  --preview-method auto \
-  --auth-token $COMFYUI_AUTH_TOKEN
+# Authentication is managed through ComfyDeploy's API integration
+# No additional CLI parameters needed for ComfyUI startup
 ```
 
 ### 3. Test Endpoint Connectivity
@@ -308,7 +298,29 @@ POST http://your-server-ip:8188/comfyui-deploy/run
 
 ### 3. Authentication Handling
 
-For classic machines, ComfyDeploy uses Basic Authentication:
+ComfyDeploy supports multiple authentication methods for self-hosted machines:
+
+#### JWT-Based Authentication
+ComfyDeploy uses JWT tokens for secure authentication. The custom-node repository implements JWT parsing:
+
+```typescript
+// JWT token verification with secret
+const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+```
+
+#### Bearer Token Authentication
+API requests use Bearer token authentication in the Authorization header:
+
+```python
+# Bearer token authentication in custom routes
+if token is not None:
+    if "headers" not in kwargs:
+        kwargs["headers"] = {}
+    kwargs["headers"]["Authorization"] = f"Bearer {token}"
+```
+
+#### Basic Authentication for Classic Machines
+Classic machines use basic authentication with base64-encoded auth tokens:
 
 ```bash
 # Auth header format
@@ -393,6 +405,117 @@ tail -f /comfyui/comfyui.log
 - Implement proper backup strategies
 - Consider data encryption for sensitive workflows
 
+## Ngrok Integration for Local Machines
+
+### Overview
+
+Ngrok allows you to expose your local ComfyUI instance to the internet securely, making it accessible to ComfyDeploy without requiring port forwarding or public IP configuration.
+
+### 1. Install and Configure Ngrok
+
+```bash
+# Install ngrok
+curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null
+echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list
+sudo apt update && sudo apt install ngrok
+
+# Set your auth token (get from https://dashboard.ngrok.com/get-started/your-authtoken)
+ngrok config add-authtoken YOUR_NGROK_AUTHTOKEN
+```
+
+### 2. Environment Variables Setup
+
+```bash
+# Set environment variables
+export NGROK_AUTHTOKEN="your-ngrok-auth-token"
+export NGROK_DOMAIN="your-custom-domain.ngrok.app"  # Optional: for custom domains
+```
+
+### 3. Start ComfyUI with Ngrok Tunnel
+
+```bash
+# Terminal 1: Start ComfyUI
+cd /comfyui
+python main.py \
+  --dont-print-server \
+  --enable-cors-header \
+  --listen \
+  --port 8188 \
+  --input-directory /private_models/input \
+  --preview-method auto
+
+# Terminal 2: Start ngrok tunnel
+ngrok http 8188 --domain=${NGROK_DOMAIN}
+```
+
+### 4. Ngrok Authentication Protection
+
+Protect your ComfyUI endpoint using ngrok's traffic policy expressions:
+
+```yaml
+# ngrok.yml configuration
+version: "2"
+authtoken: YOUR_NGROK_AUTHTOKEN
+tunnels:
+  comfyui:
+    addr: 8188
+    proto: http
+    domain: your-domain.ngrok.app
+    traffic_policy:
+      inbound:
+        - name: "Auth Protection"
+          expressions:
+            - "!(hasReqHeader('Authorization') && getReqHeader('Authorization')[0].startsWith('Basic YOUR_BASE64_TOKEN'))"
+          actions:
+            - type: "deny"
+              config:
+                status_code: 403
+                message: "Authentication required"
+```
+
+### 5. Programmatic Ngrok Setup
+
+For automated setups, use the ngrok Node.js integration like ComfyDeploy's test environment:
+
+```javascript
+// Automated ngrok tunnel setup
+const listener = await ngrok.forward({
+  addr: 8188,
+  authtoken: process.env.NGROK_AUTHTOKEN,
+  domain: process.env.NGROK_DOMAIN,
+});
+```
+
+### 6. Update ComfyDeploy Machine Configuration
+
+Update your machine configuration in ComfyDeploy:
+
+```json
+{
+  "name": "My Ngrok Machine",
+  "type": "classic",
+  "endpoint": "https://your-domain.ngrok.app",
+  "auth_token": "your-secure-token"
+}
+```
+
+### 7. Load Balancing with Multiple Tunnels
+
+For high availability, you can set up multiple ngrok tunnels with load balancing:
+
+```yaml
+# Multiple tunnel configuration
+tunnels:
+  comfyui-1:
+    addr: 8188
+    proto: http
+    domain: comfyui-1.ngrok.app
+  comfyui-2:
+    addr: 8189
+    proto: http
+    domain: comfyui-2.ngrok.app
+```
+
 ## Next Steps
 
 After setting up your on-premise ComfyDeploy instance:
@@ -402,5 +525,6 @@ After setting up your on-premise ComfyDeploy instance:
 3. **Set up monitoring and alerting** for production use
 4. **Implement backup and disaster recovery** procedures
 5. **Scale horizontally** by adding more machines as needed
+6. **Secure your endpoints** using ngrok authentication expressions to protect your instances
 
 For additional support and advanced configurations, refer to the [ComfyDeploy documentation](https://docs.comfydeploy.com) or contact the support team.
