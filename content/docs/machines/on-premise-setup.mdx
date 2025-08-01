@@ -298,34 +298,36 @@ POST http://your-server-ip:8188/comfyui-deploy/run
 
 ### 3. Authentication Handling
 
-ComfyDeploy supports multiple authentication methods for self-hosted machines:
+ComfyDeploy sends authenticated requests to your self-hosted runners using different methods based on machine type:
 
-#### JWT-Based Authentication
-ComfyDeploy uses JWT tokens for secure authentication. The custom-node repository implements JWT parsing:
+#### Authentication Flow: ComfyDeploy → Runner
 
-```typescript
-// JWT token verification with secret
-const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+**Classic Machines (with Ngrok)**
+- ComfyDeploy sends requests with Basic authentication to your ngrok-protected endpoint
+- Ngrok validates the authentication using traffic policy expressions before forwarding to ComfyUI
+- Your runner receives the authenticated request from ComfyDeploy via ngrok
+
+```bash
+# ComfyDeploy sends requests like this to your classic machine:
+curl -X POST https://your-domain.ngrok.app/comfyui-deploy/run \
+  -H "Authorization: Basic <base64-encoded-token>" \
+  -H "Content-Type: application/json" \
+  -d '{"workflow": {...}, "inputs": {...}}'
 ```
 
-#### Bearer Token Authentication
-API requests use Bearer token authentication in the Authorization header:
+**RunPod Serverless Machines**
+- ComfyDeploy sends requests with RunPod-specific authentication
+- RunPod handles the authentication and forwards to your serverless function
+
+#### Custom Node Authentication Verification
+Your ComfyUI instance with ComfyDeploy custom node can verify incoming requests:
 
 ```python
-# Bearer token authentication in custom routes
+# Custom routes handle incoming authenticated requests from ComfyDeploy
 if token is not None:
     if "headers" not in kwargs:
         kwargs["headers"] = {}
     kwargs["headers"]["Authorization"] = f"Bearer {token}"
-```
-
-#### Basic Authentication for Classic Machines
-Classic machines use basic authentication with base64-encoded auth tokens:
-
-```bash
-# Auth header format
-Authorization: Basic <base64-encoded-token>
-authorizationheader: <raw-token>
 ```
 
 ## Troubleshooting
@@ -450,7 +452,7 @@ ngrok http 8188 --domain=${NGROK_DOMAIN}
 
 ### 4. Ngrok Authentication Protection
 
-Protect your ComfyUI endpoint using ngrok's traffic policy expressions:
+Protect your ComfyUI endpoint using ngrok's traffic policy expressions to validate requests from ComfyDeploy:
 
 ```yaml
 # ngrok.yml configuration
@@ -463,7 +465,7 @@ tunnels:
     domain: your-domain.ngrok.app
     traffic_policy:
       inbound:
-        - name: "Auth Protection"
+        - name: "ComfyDeploy Auth Protection"
           expressions:
             - "!(hasReqHeader('Authorization') && getReqHeader('Authorization')[0].startsWith('Basic YOUR_BASE64_TOKEN'))"
           actions:
@@ -472,6 +474,8 @@ tunnels:
                 status_code: 403
                 message: "Authentication required"
 ```
+
+This configuration ensures that only ComfyDeploy with the correct authentication token can reach your ComfyUI instance through the ngrok tunnel.
 
 ### 5. Programmatic Ngrok Setup
 
@@ -488,7 +492,7 @@ const listener = await ngrok.forward({
 
 ### 6. Update ComfyDeploy Machine Configuration
 
-Update your machine configuration in ComfyDeploy:
+Configure your machine in ComfyDeploy so it can send authenticated requests to your ngrok endpoint:
 
 ```json
 {
@@ -498,6 +502,8 @@ Update your machine configuration in ComfyDeploy:
   "auth_token": "your-secure-token"
 }
 ```
+
+ComfyDeploy will use this `auth_token` to authenticate requests sent to your `endpoint`. The token should match the one configured in your ngrok traffic policy expressions.
 
 ### 7. Load Balancing with Multiple Tunnels
 
