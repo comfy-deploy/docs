@@ -3,49 +3,24 @@ title: On-Premise Setup
 description: Set up custom self-hosted ComfyDeploy on-premise
 ---
 
-This guide covers setting up custom self-hosted ComfyDeploy on-premise, allowing you to run ComfyUI workflows on your own infrastructure while integrating with the ComfyDeploy platform.
+Set up custom self-hosted ComfyDeploy on-premise to run ComfyUI workflows on your infrastructure.
 
 ## Overview
 
-ComfyDeploy supports three types of self-hosted machine configurations:
-
+ComfyDeploy supports three self-hosted machine types:
 - **Classic machines**: Direct ComfyUI instances with endpoint configuration
-- **RunPod serverless**: Self-hosted with serverless scaling capabilities  
+- **RunPod serverless**: Serverless scaling capabilities  
 - **Custom configurations**: Docker-based setups with custom nodes
-
-Self-hosted machines give you full control over your infrastructure while maintaining integration with ComfyDeploy's workflow management and API.
 
 ## Prerequisites
 
-### Hardware Requirements
-
-- **GPU**: NVIDIA GPU with CUDA support (recommended: RTX 4090, A100, H100)
-- **RAM**: Minimum 16GB, recommended 32GB+ for large models
-- **Storage**: SSD with at least 100GB free space for models and outputs
-- **Network**: Stable internet connection with public IP or port forwarding capability
-
-### Software Requirements
-
-- **Docker**: Latest version with GPU support (nvidia-docker2)
-- **Python**: 3.11 or higher
-- **Git**: For cloning repositories
-- **CUDA**: Compatible version with your GPU drivers
-
-### Network Configuration
-
-Your self-hosted machine needs to be accessible from the internet:
-
-- **Public IP** or **port forwarding** configured
-- **Firewall rules** allowing inbound connections on your chosen port
-- **SSL certificate** (recommended for production)
+**Hardware**: NVIDIA GPU with CUDA, 16GB+ RAM, 100GB+ SSD storage
+**Software**: Docker with GPU support, Python 3.11+, Git, CUDA drivers
+**Network**: Internet access with public IP or port forwarding on chosen port
 
 ## Machine Creation
 
-### 1. Create Self-Hosted Machine in ComfyDeploy
-
-1. Navigate to the **Machines** section in your ComfyDeploy dashboard
-2. Click **Create Machine** → **Self Hosted Machine**
-3. Configure your machine:
+Create a self-hosted machine in ComfyDeploy dashboard:
 
 ```json
 {
@@ -56,406 +31,140 @@ Your self-hosted machine needs to be accessible from the internet:
 }
 ```
 
-**Machine Types:**
-- `classic`: Standard ComfyUI instance with direct API access
-- `runpod-serverless`: RunPod-based serverless deployment
-
-### 2. Machine Configuration Options
-
-**Classic Machine Schema:**
-- **Name**: Descriptive name for your machine
-- **Endpoint**: Your ComfyUI server URL (e.g., `http://192.168.1.100:8188`)
-- **Type**: Set to `classic` for standard self-hosted setup
-- **Auth Token**: Optional authentication token for security
+**Types**: `classic` (standard ComfyUI) or `runpod-serverless` (RunPod deployment)
 
 ## ComfyUI Installation
 
-### 1. Clone ComfyUI Repository
-
 ```bash
+# Clone and install ComfyUI
 git clone https://github.com/comfyanonymous/ComfyUI.git /comfyui
 cd /comfyui
-```
-
-### 2. Install Dependencies
-
-```bash
-# Install Python dependencies
 python -m pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu121
-python -m pip install xformers
-python -m pip install -r requirements.txt
+python -m pip install xformers -r requirements.txt aioboto3
 
-# Install additional dependencies for ComfyDeploy integration
-python -m pip install aioboto3
-```
-
-### 3. Directory Structure Setup
-
-```bash
-# Create required directories
-mkdir -p /private_models/input
-mkdir -p /comfyui/custom_nodes
-mkdir -p /comfyui/models
+# Create directories
+mkdir -p /private_models/input /comfyui/custom_nodes /comfyui/models
 ```
 
 ## ComfyDeploy Custom Node Setup
 
-### 1. Install ComfyDeploy Custom Node
-
 ```bash
+# Install ComfyDeploy custom node
 cd /comfyui/custom_nodes
 git clone https://github.com/BennyKok/comfyui-deploy --recursive
 cd comfyui-deploy
 git reset --hard 7b734c415aabd51b8bb8fad9fd719032b3b8a36fa
-```
+if [ -f requirements.txt ]; then python -m pip install -r requirements.txt; fi
+if [ -f install.py ]; then python install.py || echo 'install script failed'; fi
 
-### 2. Install Node Dependencies
-
-```bash
-# Install requirements if available
-if [ -f requirements.txt ]; then 
-    python -m pip install -r requirements.txt
-fi
-
-# Run install script if available
-if [ -f install.py ]; then 
-    python install.py || echo 'install script failed'
-fi
-```
-
-### 3. Install ComfyUI Manager (Optional)
-
-```bash
+# Optional: Install ComfyUI Manager
 cd /comfyui/custom_nodes
 git clone https://github.com/ltdrdata/ComfyUI-Manager.git --recursive
-cd ComfyUI-Manager
-git reset --hard fd2d285af5ae257a4d1f3c1146981ce41ac5adf5
+cd ComfyUI-Manager && git reset --hard fd2d285af5ae257a4d1f3c1146981ce41ac5adf5
 if [ -f requirements.txt ]; then python -m pip install -r requirements.txt; fi
 if [ -f install.py ]; then python install.py || echo 'install script failed'; fi
 ```
 
 ## Custom Node Installation
 
-### Using Docker Commands
-
-For additional custom nodes, you can use Docker-style commands:
-
-```dockerfile
-# System packages
-RUN apt-get update && apt-get install -y <package-name>
-
-# Python packages
-RUN pip install <package-name>
-
-# Custom nodes from Git
-WORKDIR /comfyui/custom_nodes
-RUN git clone <git-url> --recursive
-WORKDIR /comfyui/custom_nodes/<custom-node-name>
-RUN git reset --hard <commit-hash>
-RUN if [ -f requirements.txt ]; then python -m pip install -r requirements.txt; fi
-RUN if [ -f install.py ]; then python install.py || echo "install script failed"; fi
-
-# Models in custom node directories
-RUN wget -P /comfyui/custom_nodes/<CustomNode-Directory> <model-url>
-```
-
-### Manual Installation
-
-1. **Clone the custom node repository:**
 ```bash
+# Install additional custom nodes
 cd /comfyui/custom_nodes
-git clone https://github.com/author/custom-node-repo --recursive
+git clone <git-url> --recursive
+cd <custom-node-name>
+git reset --hard <commit-hash>
+if [ -f requirements.txt ]; then python -m pip install -r requirements.txt; fi
+if [ -f install.py ]; then python install.py || echo "install script failed"; fi
 ```
-
-2. **Install dependencies:**
-```bash
-cd custom-node-repo
-pip install -r requirements.txt
-python install.py
-```
-
-3. **Restart ComfyUI** to load the new nodes
 
 ## Endpoint Configuration
 
-### 1. Start ComfyUI Server
-
 ```bash
+# Start ComfyUI server
 cd /comfyui
-python main.py \
-  --dont-print-server \
-  --enable-cors-header \
-  --listen \
-  --port 8188 \
-  --input-directory /private_models/input \
-  --preview-method auto
-```
+python main.py --dont-print-server --enable-cors-header --listen --port 8188 \
+  --input-directory /private_models/input --preview-method auto
 
-### 2. Configure Authentication (Optional)
-
-For secure deployments, authentication is handled at the API level, not through ComfyUI CLI parameters:
-
-```bash
-# Authentication is managed through ComfyDeploy's API integration
-# No additional CLI parameters needed for ComfyUI startup
-```
-
-### 3. Test Endpoint Connectivity
-
-```bash
-# Test basic connectivity
+# Test connectivity
 curl http://your-server-ip:8188/system_stats
-
-# Test ComfyDeploy integration
 curl -X POST http://your-server-ip:8188/comfyui-deploy/run \
   -H "Content-Type: application/json" \
   -H "Authorization: Basic $(echo -n 'your-auth-token' | base64)" \
   -d '{"cd_token": "test"}'
 ```
 
-## Docker Deployment (Advanced)
-
-### 1. Create Dockerfile
+## Docker Deployment
 
 ```dockerfile
 FROM nvidia/cuda:12.1-devel-ubuntu22.04
-
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    python3 python3-pip git wget curl \
-    libgl1-mesa-glx libglib2.0-0 \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install Python dependencies
+RUN apt-get update && apt-get install -y python3 python3-pip git wget curl libgl1-mesa-glx libglib2.0-0 && rm -rf /var/lib/apt/lists/*
 RUN python3 -m pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu121
 RUN python3 -m pip install xformers aioboto3
-
-# Clone ComfyUI
 RUN git clone https://github.com/comfyanonymous/ComfyUI.git /comfyui
 WORKDIR /comfyui
 RUN python3 -m pip install -r requirements.txt
-
-# Install ComfyDeploy custom node
 WORKDIR /comfyui/custom_nodes
 RUN git clone https://github.com/BennyKok/comfyui-deploy --recursive
 WORKDIR /comfyui/custom_nodes/comfyui-deploy
-RUN git reset --hard 7b734c415aabd51b8bb8fad9fd719032b3b8a36fa
-RUN if [ -f requirements.txt ]; then python3 -m pip install -r requirements.txt; fi
-RUN if [ -f install.py ]; then python3 install.py || echo 'install script failed'; fi
-
-# Create required directories
+RUN git reset --hard 7b734c415aabd51b8bb8fad9fd719032b3b8a36fa && \
+    if [ -f requirements.txt ]; then python3 -m pip install -r requirements.txt; fi && \
+    if [ -f install.py ]; then python3 install.py || echo 'install script failed'; fi
 RUN mkdir -p /private_models/input
-
 WORKDIR /comfyui
 EXPOSE 8188
-
 CMD ["python3", "main.py", "--dont-print-server", "--enable-cors-header", "--listen", "--port", "8188", "--input-directory", "/private_models/input", "--preview-method", "auto"]
 ```
 
-### 2. Build and Run Container
-
 ```bash
-# Build image
+# Build and run
 docker build -t comfyui-deploy-onpremise .
-
-# Run container
-docker run -d \
-  --name comfyui-deploy \
-  --gpus all \
-  -p 8188:8188 \
-  -v /path/to/models:/comfyui/models \
-  -v /path/to/outputs:/comfyui/output \
-  comfyui-deploy-onpremise
+docker run -d --name comfyui-deploy --gpus all -p 8188:8188 \
+  -v /path/to/models:/comfyui/models -v /path/to/outputs:/comfyui/output comfyui-deploy-onpremise
 ```
 
-## Integration with ComfyDeploy
+## Authentication Flow: ComfyDeploy → Runner
 
-### 1. Update Machine Configuration
-
-After setting up your on-premise instance:
-
-1. Go to your machine settings in ComfyDeploy
-2. Update the endpoint URL to match your server
-3. Set the authentication token if configured
-4. Test the connection
-
-### 2. API Integration
-
-Your self-hosted machine will receive workflow execution requests at:
-
-```
-POST http://your-server-ip:8188/comfyui-deploy/run
-```
-
-**Request Format:**
-```json
-{
-  "workflow": { /* ComfyUI workflow JSON */ },
-  "inputs": { /* Input parameters */ },
-  "cd_token": "your-comfydeploy-token"
-}
-```
-
-### 3. Authentication Handling
-
-ComfyDeploy sends authenticated requests to your self-hosted runners using different methods based on machine type:
-
-#### Authentication Flow: ComfyDeploy → Runner
-
-**Classic Machines (with Ngrok)**
-- ComfyDeploy sends requests with Basic authentication to your ngrok-protected endpoint
-- Ngrok validates the authentication using traffic policy expressions before forwarding to ComfyUI
-- Your runner receives the authenticated request from ComfyDeploy via ngrok
+**Classic Machines**: ComfyDeploy sends Basic auth requests to your ngrok-protected endpoint
+**RunPod Serverless**: ComfyDeploy sends RunPod-specific authentication
 
 ```bash
-# ComfyDeploy sends requests like this to your classic machine:
+# ComfyDeploy sends requests like this:
 curl -X POST https://your-domain.ngrok.app/comfyui-deploy/run \
   -H "Authorization: Basic <base64-encoded-token>" \
   -H "Content-Type: application/json" \
-  -d '{"workflow": {...}, "inputs": {...}}'
-```
-
-**RunPod Serverless Machines**
-- ComfyDeploy sends requests with RunPod-specific authentication
-- RunPod handles the authentication and forwards to your serverless function
-
-#### Custom Node Authentication Verification
-Your ComfyUI instance with ComfyDeploy custom node can verify incoming requests:
-
-```python
-# Custom routes handle incoming authenticated requests from ComfyDeploy
-if token is not None:
-    if "headers" not in kwargs:
-        kwargs["headers"] = {}
-    kwargs["headers"]["Authorization"] = f"Bearer {token}"
+  -d '{"workflow": {...}, "inputs": {...}, "cd_token": "your-token"}'
 ```
 
 ## Troubleshooting
 
-### Common Issues
+**Connection Issues**: Check ComfyUI port 8188, firewall settings, endpoint accessibility
+**Authentication Errors**: Verify auth_token matches, check header formatting, test with curl
+**Custom Node Issues**: Restart ComfyUI, check dependencies, verify compatibility
+**GPU Not Detected**: Install nvidia-docker2, verify CUDA drivers, use `--gpus all` flag
 
-**1. Connection Refused**
-- Check if ComfyUI is running on the correct port
-- Verify firewall settings allow inbound connections
-- Ensure the endpoint URL is accessible from the internet
+**Performance**: Monitor GPU memory (`nvidia-smi -l 1`), use model caching, faster storage (NVMe SSD)
+**Logging**: `tail -f /comfyui/comfyui.log`, monitor response times, set up alerts
 
-**2. Authentication Errors**
-- Verify auth token matches between ComfyDeploy and your server
-- Check that authentication headers are properly configured
-- Test authentication with curl commands
-
-**3. Custom Node Loading Issues**
-- Restart ComfyUI after installing new custom nodes
-- Check custom node dependencies are installed
-- Verify custom node compatibility with your ComfyUI version
-
-**4. GPU Not Detected**
-- Install nvidia-docker2 for Docker deployments
-- Verify CUDA installation and GPU drivers
-- Check that `--gpus all` flag is used in Docker run command
-
-### Performance Optimization
-
-**1. Model Loading**
-- Pre-download frequently used models to reduce startup time
-- Use model caching to avoid repeated downloads
-- Consider using faster storage (NVMe SSD) for model storage
-
-**2. Memory Management**
-- Monitor GPU memory usage during workflow execution
-- Adjust batch sizes based on available GPU memory
-- Use model offloading for large models if needed
-
-**3. Network Optimization**
-- Use CDN or local storage for large input files
-- Implement proper caching strategies
-- Consider using compression for API responses
-
-### Monitoring and Logging
-
-**1. System Monitoring**
-```bash
-# Monitor GPU usage
-nvidia-smi -l 1
-
-# Monitor system resources
-htop
-
-# Check ComfyUI logs
-tail -f /comfyui/comfyui.log
-```
-
-**2. API Monitoring**
-- Monitor endpoint response times
-- Track workflow execution success rates
-- Set up alerts for system failures
-
-## Security Considerations
-
-### 1. Network Security
-- Use HTTPS/TLS for production deployments
-- Implement proper firewall rules
-- Consider VPN access for sensitive deployments
-
-### 2. Authentication
-- Use strong, unique authentication tokens
-- Rotate tokens regularly
-- Implement rate limiting to prevent abuse
-
-### 3. Data Protection
-- Secure model and output storage
-- Implement proper backup strategies
-- Consider data encryption for sensitive workflows
+**Security**: Use HTTPS/TLS, strong auth tokens, rotate credentials, implement rate limiting
 
 ## Ngrok Integration for Local Machines
 
-### Overview
-
-Ngrok allows you to expose your local ComfyUI instance to the internet securely, making it accessible to ComfyDeploy without requiring port forwarding or public IP configuration.
-
-### 1. Install and Configure Ngrok
+Expose your local ComfyUI instance securely without port forwarding:
 
 ```bash
-# Install ngrok
+# Install and configure ngrok
 curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null
 echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list
 sudo apt update && sudo apt install ngrok
-
-# Set your auth token (get from https://dashboard.ngrok.com/get-started/your-authtoken)
 ngrok config add-authtoken YOUR_NGROK_AUTHTOKEN
+
+# Start ComfyUI and ngrok tunnel
+cd /comfyui && python main.py --dont-print-server --enable-cors-header --listen --port 8188 --input-directory /private_models/input --preview-method auto &
+ngrok http 8188 --domain=your-domain.ngrok.app
 ```
 
-### 2. Environment Variables Setup
-
-```bash
-# Set environment variables
-export NGROK_AUTHTOKEN="your-ngrok-auth-token"
-export NGROK_DOMAIN="your-custom-domain.ngrok.app"  # Optional: for custom domains
-```
-
-### 3. Start ComfyUI with Ngrok Tunnel
-
-```bash
-# Terminal 1: Start ComfyUI
-cd /comfyui
-python main.py \
-  --dont-print-server \
-  --enable-cors-header \
-  --listen \
-  --port 8188 \
-  --input-directory /private_models/input \
-  --preview-method auto
-
-# Terminal 2: Start ngrok tunnel
-ngrok http 8188 --domain=${NGROK_DOMAIN}
-```
-
-### 4. Ngrok Authentication Protection
-
-Protect your ComfyUI endpoint using ngrok's traffic policy expressions to validate requests from ComfyDeploy:
-
+**Authentication Protection** - Create `ngrok.yml`:
 ```yaml
-# ngrok.yml configuration
 version: "2"
 authtoken: YOUR_NGROK_AUTHTOKEN
 tunnels:
@@ -472,65 +181,34 @@ tunnels:
             - type: "deny"
               config:
                 status_code: 403
-                message: "Authentication required"
 ```
 
-This configuration ensures that only ComfyDeploy with the correct authentication token can reach your ComfyUI instance through the ngrok tunnel.
-
-### 5. Programmatic Ngrok Setup
-
-For automated setups, use the ngrok Node.js integration like ComfyDeploy's test environment:
-
-```javascript
-// Automated ngrok tunnel setup
-const listener = await ngrok.forward({
-  addr: 8188,
-  authtoken: process.env.NGROK_AUTHTOKEN,
-  domain: process.env.NGROK_DOMAIN,
-});
-```
-
-### 6. Update ComfyDeploy Machine Configuration
-
-Configure your machine in ComfyDeploy so it can send authenticated requests to your ngrok endpoint:
-
+**Machine Configuration** in ComfyDeploy:
 ```json
 {
   "name": "My Ngrok Machine",
-  "type": "classic",
+  "type": "classic", 
   "endpoint": "https://your-domain.ngrok.app",
   "auth_token": "your-secure-token"
 }
 ```
 
-ComfyDeploy will use this `auth_token` to authenticate requests sent to your `endpoint`. The token should match the one configured in your ngrok traffic policy expressions.
+## Enterprise Support
 
-### 7. Load Balancing with Multiple Tunnels
+Need help with enterprise deployment, custom integrations, or scaling? Book a call with our team:
 
-For high availability, you can set up multiple ngrok tunnels with load balancing:
+**[Schedule Enterprise Demo](https://cal.com/team/comfy-deploy/demo?layout=mobile)**
 
-```yaml
-# Multiple tunnel configuration
-tunnels:
-  comfyui-1:
-    addr: 8188
-    proto: http
-    domain: comfyui-1.ngrok.app
-  comfyui-2:
-    addr: 8189
-    proto: http
-    domain: comfyui-2.ngrok.app
-```
+Our enterprise support includes:
+- Custom deployment assistance
+- Advanced authentication setups
+- Load balancing and scaling guidance
+- Priority technical support
 
 ## Next Steps
 
-After setting up your on-premise ComfyDeploy instance:
-
-1. **Test workflow execution** through the ComfyDeploy interface
-2. **Monitor performance** and optimize as needed
-3. **Set up monitoring and alerting** for production use
-4. **Implement backup and disaster recovery** procedures
-5. **Scale horizontally** by adding more machines as needed
-6. **Secure your endpoints** using ngrok authentication expressions to protect your instances
-
-For additional support and advanced configurations, refer to the [ComfyDeploy documentation](https://docs.comfydeploy.com) or contact the support team.
+1. Test workflow execution through ComfyDeploy interface
+2. Monitor performance and optimize as needed
+3. Set up monitoring/alerting for production use
+4. Implement backup and disaster recovery procedures
+5. Scale horizontally by adding more machines
