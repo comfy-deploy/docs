@@ -21,6 +21,7 @@
     "integration/custom-s3",
     "nextjs",
     "---Upgrade---",
+    "upgrade/changelog",
     "upgrade/v2"
   ],
   "root": true
