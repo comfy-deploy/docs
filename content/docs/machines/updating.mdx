@@ -1,0 +1,30 @@
+---
+title: Updating ComfyDeploy and Machines
+description: 'Best practices for keeping your ComfyDeploy installation and machines up to date'
+---
+
+## Update ComfyDeploy Version
+
+In your machine page, click the **Update** button when available to upgrade to the latest ComfyDeploy version.
+
+![Update ComfyDeploy](https://cd-misc.s3.us-east-2.amazonaws.com/docs/update-comfydeploy-to-latest.png)
+
+## Rebuild Machine
+
+Use the dropdown menu in your machine page and select **Rebuild** to update your machine to the latest system state.
+
+![Rebuild Machine](https://cd-misc.s3.us-east-2.amazonaws.com/docs/rebuild-machine.png)
+
+## When to Update
+
+- **After ComfyDeploy updates**: Always rebuild machines after updating ComfyDeploy
+- **New ComfyUI versions**: Rebuild when new ComfyUI versions are available
+- **Compatibility issues**: Update when experiencing custom node conflicts
+- **Following changelog**: Check [changelog](/docs/upgrade/changelog) for required actions
+
+## Best Practices
+
+1. **Update regularly** - Check for updates weekly
+2. **Test first** - Use development machines before production updates
+3. **Monitor breaking changes** - Review [changelog](/docs/upgrade/changelog) before updating
+4. **Backup workflows** - Save important workflows before major updates
