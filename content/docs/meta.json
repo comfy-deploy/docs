@@ -19,6 +19,7 @@
     "---Guides---",
     "data/data-flow",
     "integration/custom-s3",
+    "integration/comfy-org-api-nodes",
     "nextjs",
     "---Upgrade---",
     "upgrade/changelog",
