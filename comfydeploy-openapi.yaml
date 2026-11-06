@@ -48,7 +48,7 @@ components:
           example: true
         gpu:
           type: string
-          enum: [T4, L4, A10G, L40S, A100, A100-80GB, H100]
+          enum: [T4, L4, A10G, L40S, A100, A100-80GB, H100, RTX-PRO-6000]
           description: The GPU to override the machine's default GPU
       required:
         - deployment_id
