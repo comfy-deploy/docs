@@ -1,5 +1,5 @@
 import defaultMdxComponents from 'fumadocs-ui/mdx';
-import { APIPage } from 'fumadocs-openapi/ui';
+import { OpenAPIPage } from '@/components/api-page';
 import YouTube from '@/components/YouTube';
 import { openapi } from '@/lib/source';
 import type { MDXComponents } from 'mdx/types';
@@ -8,7 +8,12 @@ import type { MDXComponents } from 'mdx/types';
 export function getMDXComponents(components?: MDXComponents): MDXComponents {
   return {
     ...defaultMdxComponents,
-    APIPage: (props) => <APIPage {...openapi.getAPIPageProps(props)} />,
+    APIPage: async (props) => (
+      <OpenAPIPage
+        {...props}
+        payload={{ bundled: (await openapi.getSchema(props.document)).bundled }}
+      />
+    ),
     YouTube,
     ...components,
   };

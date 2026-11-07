@@ -1,7 +1,6 @@
 {
   "title": "Workspace",
   "description": "ComfyUI workspace with Dynamic Island navigation",
-  "icon": "monitor",
   "pages": [
     "overview",
     "sessions",

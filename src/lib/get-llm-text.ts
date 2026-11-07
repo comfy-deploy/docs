@@ -14,8 +14,9 @@ const processor = remark()
 
 export async function getLLMText(page: InferPageType<typeof source>) {
   const processed = await processor.process({
-    path: page.absolutePath,
-    value: await fs.readFile(page.absolutePath),
+    // fumadocs-mdx always sets absolutePath for local files
+    path: page.absolutePath!,
+    value: await fs.readFile(page.absolutePath!),
   });
 
   // note: it doesn't escape frontmatter, it's up to you.

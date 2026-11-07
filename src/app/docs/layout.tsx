@@ -2,14 +2,14 @@ import { DocsLayout } from "fumadocs-ui/layouts/docs";
 import type { ReactNode } from "react";
 import { baseOptions } from "@/app/layout.config";
 import { source } from "@/lib/source";
-import type { PageTree } from "fumadocs-core/server";
-import { FileText, Link } from "fumadocs-ui/internal/icons";
+import type * as PageTree from "fumadocs-core/page-tree";
+import { FileText, Link } from "lucide-react";
 
 function filterTree(tree: PageTree.Root, isApiPage: boolean): PageTree.Root {
   if (isApiPage) {
     const apiRoot = tree.children.find((child) => 'url' in child && child.url?.startsWith('/docs/api'));
     if (apiRoot && apiRoot.type === 'folder') {
-      return { ...apiRoot, children: apiRoot.children ?? [] } as PageTree.Root;
+      return { ...apiRoot, type: 'root', children: apiRoot.children ?? [] } as PageTree.Root;
     }
   }
 
