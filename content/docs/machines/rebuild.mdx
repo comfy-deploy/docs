@@ -1,0 +1,47 @@
+---
+title: Rebuild a Machine
+description: 'Rebuild older machines before January 31, 2027 to keep them running'
+---
+
+We upgraded the infrastructure that runs your machines. Machines last built before the upgrade must be rebuilt by **January 31, 2027**.
+
+## When to rebuild
+
+- Your machine shows a **Rebuild required** badge on the [Machines page](https://app.comfydeploy.com/machines).
+- Do it any time before **January 31, 2027**. Earlier is better.
+
+Machines without the badge do not need a rebuild.
+
+## How to rebuild
+
+1. Open the [Machines page](https://app.comfydeploy.com/machines).
+2. Find the machine with the **Rebuild required** badge.
+3. Click the **⋮** menu on that machine, then click **Rebuild**.
+4. Click **Confirm**.
+
+You are taken to the machine page, where you can follow the build logs.
+
+![Rebuild Machine](https://cd-misc.s3.us-east-2.amazonaws.com/docs/rebuild-machine.png)
+
+## What happens during a rebuild
+
+- It takes a few minutes.
+- A new machine version is created.
+- Your settings, custom nodes and models are kept.
+- The first run after the rebuild may be slower while caches warm up.
+
+## FAQ
+
+### What if I don't rebuild?
+
+The machine stops running after January 31, 2027.
+
+### Do my deployments or API endpoints change?
+
+No. Your deployment IDs and API URLs stay the same.
+
+A deployment uses the machine version it was deployed with. After the rebuild, open your workflow's **Deployment** page and update each deployment (production and staging) so it uses the new machine version. The deployment ID does not change.
+
+### Need help?
+
+Reply to our email, or contact us at [founders@comfydeploy.com](mailto:founders@comfydeploy.com).
